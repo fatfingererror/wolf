@@ -29,7 +29,8 @@ I am currently working on the deployment scripts, all the modules should be easy
 ```
 git clone https://github.com/slawekj/wolf.git
 pip install -r requirements.txt
-cd histdata.com and  src/1.scrape.py
+python histdata.com/src/1.scrape.py
+
 ./wolf/<module name>/bin/install.sh
 ./wolf/<module name>/bin/run.sh
 ```

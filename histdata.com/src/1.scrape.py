@@ -1,11 +1,15 @@
-from selenium import webdriver
+import glob
 import time
+import os
+import zipfile
+
+from selenium import webdriver
 
 pairs = ['eurusd', 'gbpusd', 'usdjpy', 'usdchf', 'usdcad', 'audusd', 'nzdusd']
-
 months = ['5']
 years = ['2016']
-u = ''
+destination_path = os.path.join(os.path.expanduser('~'), 'git/working/projects/wolf/histdata.com/data/csv')
+downloads_path = os.path.join(os.path.expanduser('~'), 'Downloads')
 
 fp = webdriver.FirefoxProfile()
 fp.set_preference("browser.download.folderList",2)
@@ -23,6 +27,18 @@ for p in pairs:
 
                 driver.get(u)
                 time.sleep(5)
-                driver.find_element_by_id("a_file").click()
+                element = driver.find_element_by_id("a_file")
+                element.click()
                 time.sleep(20)
-                #drive.quit()
+
+driver.quit()
+
+os.chdir(downloads_path)
+filenames = glob.glob('HISTDATA_COM_ASCII_*')
+for f in filenames:
+    ticks_file = os.path.join(downloads_path, f)
+    with zipfile.ZipFile(ticks_file, "r") as z:
+        for name in z.namelist():
+            if name.endswith('.csv'):
+                z.extract(name, destination_path)
+    os.remove(ticks_file)
