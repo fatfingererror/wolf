@@ -35,5 +35,5 @@ CURR_YEAR=$(TZ="EST" date +"%Y")
 
 SYMBOL=$1
 
-${CAT} ${PATH_TO_CSV}/${SYMBOL}.whatever.csv | $PYTHON -u $PATH_TO_SRC/2.provider.py $SYMBOL $CURR_MONTH $CURR_DAY &>> $PATH_TO_LOG/$SYMBOL.log &
+${CAT} ${PATH_TO_CSV}/${SYMBOL}.whatever.csv | $PYTHON -u $PATH_TO_SRC/2.provider.py $SYMBOL $CURR_MONTH $CURR_DAY >> $PATH_TO_LOG/$SYMBOL.log
 

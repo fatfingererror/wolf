@@ -24,10 +24,13 @@ PATH_TO_SRC=$WOLF_DATA_PROVIDER_HOME/src
 PATH_TO_LOG=$WOLF_DATA_PROVIDER_HOME/log
 
 CURR_MONTH=$(TZ="EST" date +"%m")
-PREV_MONTH=$(TZ="EST" date +"%m" --date="1 month ago")
+# PREV_MONTH=$(TZ="EST" date +"%m" --date="1 month ago")
+
+PREV_MONTH=$(TZ="EST" date -v-1m +"%m")
 
 CURR_DAY=$(TZ="EST" date +"%d")
-NEXT_DAY=$(TZ="EST" date +"%d" --date="next day")
+# NEXT_DAY=$(TZ="EST" date +"%d" --date="next day")
+NEXT_DAY=$(TZ="EST" date -v+1d +"%d")
 
 CURR_HOUR=$(TZ="EST" date +"%H")
 
@@ -35,5 +38,4 @@ CURR_YEAR=$(TZ="EST" date +"%Y")
 
 SYMBOL=$1
 
-${CAT} ${PATH_TO_CSV}/DAT_ASCII_${SYMBOL}_T_${CURR_YEAR}${PREV_MONTH}.csv | grep ^${CURR_YEAR}${PREV_MONTH}${CURR_DAY} | $PYTHON -u $PATH_TO_SRC/2.provider.py $SYMBOL $CURR_MONTH $CURR_DAY &>> $PATH_TO_LOG/$SYMBOL.log &
-
+${CAT} ${PATH_TO_CSV}/DAT_ASCII_${SYMBOL}_T_${CURR_YEAR}${PREV_MONTH}.csv | grep ^${CURR_YEAR}${PREV_MONTH}${CURR_DAY} | $PYTHON -u $PATH_TO_SRC/2.provider.py $SYMBOL $CURR_MONTH $CURR_DAY >> $PATH_TO_LOG/$SYMBOL.log

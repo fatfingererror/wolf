@@ -32,8 +32,8 @@ con = cql.connect('ec2-54-187-166-118.us-west-2.compute.amazonaws.com',
 cursor = con.cursor()
 
 # time conversion and stuff
-custom_month = -1 
-custom_day   = -1 
+custom_month = -1
+custom_day   = -1
 est          = timezone('EST')
 
 topic        = "forex"
@@ -50,7 +50,7 @@ print "Loading data to memory..."
 lines = [line.strip() for line in sys.stdin]
 print "Loading data to memory done!"
 
-# initialize scheduler	
+# initialize scheduler
 s = sched.scheduler(time.time, time.sleep)
 
 def upload(q,m,l,j):
@@ -79,11 +79,11 @@ for line in lines:
 	minute = date[1][2:4]
 	second = date[1][4:6]
 	milisec = date[1][6:9]
-	
+
 	bid = cols[1]
 	ask = cols[2]
 
-	timestring = year + month + day + hour + minute + second + milisec + "00"	
+	timestring = year + month + day + hour + minute + second + milisec + "00"
 
 	timezone_blind = datetime.strptime(timestring,"%Y%m%d%H%M%S%f")
 	timezone_aware = est.localize(timezone_blind)
@@ -103,17 +103,17 @@ for line in lines:
 	q = q + "" + bid + ","
 	q = q + "" + ask + ") USING TTL 10800;"
 
-	m = "pushing " + forex_pair + " " 
+	m = "pushing " + forex_pair + " "
 	m = m + utc_s1 + " "
 	m = m + "to key " + utc_k + " "
 	m = m + "with timestamp " + str(utc_t)
 
-	tick  = forex_pair + " 0 " + '%d' % (utc_t * 1000) + " " + '%d' % (utc_t * 1000) + " " + str(bid) + " " + str(ask) 
-	tickJ = json.dumps({'symbol':forex_pair,'issued_at':utc_t,'bid':bid,'ask':ask}) 
+	tick  = forex_pair + " 0 " + '%d' % (utc_t * 1000) + " " + '%d' % (utc_t * 1000) + " " + str(bid) + " " + str(ask)
+	tickJ = json.dumps({'symbol':forex_pair,'issued_at':utc_t,'bid':bid,'ask':ask})
         #validate(tickJ,schema)
 
 	s.enterabs(utc_t,1,upload,argument=(q,m,tick,tickJ))
-	
+
 print "Loading data to scheduler done!"
 
 # run the scheduler
