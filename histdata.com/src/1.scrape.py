@@ -5,8 +5,8 @@ import zipfile
 
 from selenium import webdriver
 
-pairs = ['eurusd', 'gbpusd', 'usdjpy', 'usdchf', 'usdcad', 'audusd', 'nzdusd']
-months = ['5']
+pairs = ['eurusd', 'gbpusd'] #'usdjpy', 'usdchf', 'usdcad', 'audusd', 'nzdusd']
+months = ['6']
 years = ['2016']
 destination_path = os.path.join(os.path.expanduser('~'), 'git/working/projects/wolf/histdata.com/data/csv')
 downloads_path = os.path.join(os.path.expanduser('~'), 'Downloads')

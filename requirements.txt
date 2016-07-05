@@ -4,3 +4,4 @@ flask
 kafka-python
 jsonschema
 selenium
+cqlsh
