@@ -12,31 +12,35 @@ import backtype.storm.topology.TopologyBuilder;
 import backtype.storm.tuple.Fields;
 
 public class RuleEngineTopology {
-	public static void main(String[] args) throws AlreadyAliveException,
-			InvalidTopologyException {
-		TopologyBuilder builder = new TopologyBuilder();
+    public static void main(String[] args) throws AlreadyAliveException,
+            InvalidTopologyException {
+        TopologyBuilder builder = new TopologyBuilder();
 
-		// Zookeeper that serves for Kafka queue
-		ZkHosts zk = new ZkHosts(
-				"ec2-54-183-118-187.us-west-1.compute.amazonaws.com");
+        // Zookeeper that serves for Kafka queue
+        ZkHosts zk = new ZkHosts("localhost");
 
-		SpoutConfig configTicks = new SpoutConfig(zk, "forex",
-				"/kafkastormforex2", "kafkastormforex2");
-		configTicks.scheme = new SchemeAsMultiScheme(new TickScheme());
+        SpoutConfig configTicks = new SpoutConfig(zk, "forex",
+                "/kafkastormforex2", "kafkastormforex2");
+        configTicks.scheme = new SchemeAsMultiScheme(new TickScheme());
 
-		SpoutConfig configRules = new SpoutConfig(zk, "rules",
-				"/kafkastormrules2", "kafkastormrules2");
-		configRules.scheme = new SchemeAsMultiScheme(new RuleScheme());
+        SpoutConfig configRules = new SpoutConfig(zk, "rules",
+                "/kafkastormrules2", "kafkastormrules2");
+        configRules.scheme = new SchemeAsMultiScheme(new RuleScheme());
 
-		builder.setSpout("TicksStream", new KafkaSpout(configTicks));
-		builder.setSpout("RulesStream", new KafkaSpout(configRules));
+        builder.setSpout("TicksStream", new KafkaSpout(configTicks));
+        builder.setSpout("RulesStream", new KafkaSpout(configRules));
 
-		builder.setBolt("ExecutionBolt", new ExecutionBolt(), 3)
-				.fieldsGrouping("TicksStream", new Fields("symbol"))
-				.fieldsGrouping("RulesStream", new Fields("symbol"));
+        builder.setBolt("ExecutionBolt", new ExecutionBolt(), 3)
+                .fieldsGrouping("TicksStream", new Fields("symbol"))
+                .fieldsGrouping("RulesStream", new Fields("symbol"));
 
-		Config conf = new Config();
-		StormSubmitter.submitTopology(args[0], conf, builder.createTopology());
-	}
+        Config conf = new Config();
+        conf.setDebug(true);
+        try {
+            StormSubmitter.submitTopology(args[0], conf, builder.createTopology());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

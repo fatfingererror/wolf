@@ -31,11 +31,11 @@ git clone https://github.com/slawekj/wolf.git
 install cassandra, kafka, storm
 make cassandra start at login:  ln -sfv /usr/local/opt/cassandra/*.plist ~/Library/LaunchAgents
 pip install -r requirements.txt
-python histdata.com/src/1.scrape.py gbpusd 2016 06
+Whenever needed to scrape (after end of previous month): python histdata.com/src/1.scrape.py gbpusd 2016 06
 cqlsh < data.aggregator.rt/src/1.create.table.cql
-
-./wolf/<module name>/bin/install.sh
-./wolf/<module name>/bin/run.sh
+Download flot js: http://www.flotcharts.org/ and move at web.interface/
+php -S localhost:8000
+Navigate at: /Users/lambdasloth/git/working/projects/wolf/web.interface/graph.new.html
 ```
 Modules should be deployed, possibly to different physical machines/clusters, in the following order:
   1. data.router (deployment scripts ready)
@@ -47,8 +47,4 @@ Modules should be deployed, possibly to different physical machines/clusters, in
   7. restful.cache.batch (deployment scripts in preparation)
   8. restful.rule.submission (deployment scripts in preparation)
   9. web.interface (deployment scripts in preparation)
-
-Deployment scripts are tested on Ubuntu 12.04 distribution, which is available [here](http://releases.ubuntu.com/12.04/ubuntu-12.04.4-server-amd64.iso). You should have sudo permissions and git installed:
-```
-sudo apt-get install git
 ```
