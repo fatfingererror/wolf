@@ -3,3 +3,6 @@ rule_engine:
   # dockerfile: ./rule.engine
   # command: python -c "import time"
   command: ./srv/rule_engine/bin/install.sh
+
+data_router:
+  build: ./data.router
