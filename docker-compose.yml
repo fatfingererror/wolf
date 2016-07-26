@@ -1,8 +1,23 @@
 rule_engine:
   build: ./rule.engine
-  # dockerfile: ./rule.engine
-  # command: python -c "import time"
   command: ./srv/rule_engine/bin/install.sh
 
 data_router:
   build: ./data.router
+
+
+# http://192.168.99.101:8080/
+# /etc/hosts dockerion:8080
+web:
+    image: nginx:latest
+    ports:
+        - "8080:80"
+    volumes:
+        - ./web.interface/:/srv/web/
+        - ./web.interface/site.conf:/etc/nginx/conf.d/default.conf
+    links:
+        - php
+php:
+    image: php:7-fpm
+    volumes:
+        - ./web.interface/:/srv/web/
