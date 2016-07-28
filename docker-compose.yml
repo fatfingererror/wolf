@@ -5,6 +5,21 @@ rule_engine:
 data_router:
   build: ./data.router
 
+cassandra:
+  build: ./data.aggregator.rt
+  dockerfile: Dockerfile
+
+data_provider:
+  build: .
+  dockerfile: data.provider/Dockerfile
+  volumes:
+    - ./data.provider:/srv/data.provider/
+    - ./histdata.com/data/csv:/srv/histdata.com/data/csv
+  links:
+    - cassandra:database
+    - data_router:kafka
+  command:
+    python3 src/2.provider.py audusd 2016 05
 
 # http://192.168.99.101:8080/
 # /etc/hosts dockerion:8080

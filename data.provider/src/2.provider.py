@@ -3,15 +3,17 @@
 # argument 1 is a custom forex pair name
 # argument 2 is a custom month number
 import os
-import sys, sched, time, cql, calendar
+import sys, sched, time, calendar
 from pytz import timezone
 from datetime import datetime
-from time import mktime, strftime
+from time import strftime
 from kafka.client import KafkaClient
 from kafka import KafkaProducer
-from flask import json, jsonify
-from jsonschema import validate, ValidationError
+from flask import json
 from cassandra.cluster import Cluster
+
+__here__ = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(__here__, '..', '..', 'histdata.com', 'data', 'csv')
 
 schema = {
         "properties" : {
@@ -22,17 +24,15 @@ schema = {
         },
         "required": ["symbol", "issued_at", "bid", "ask"]
 }
-__here__ = os.path.dirname(os.path.abspath(__file__))
-DATA_DIR = os.path.join(__here__, '..', '..', 'histdata.com', 'data', 'csv')
+
 # connect to kafka
-# kafka = KafkaClient()
-producer = KafkaProducer()
+kafka_configs = os.getenv('KAFKA_PORT_9092_TCP').replace('tcp://', '')
+kafka = KafkaClient(bootstrap_servers=[kafka_configs])
+producer = KafkaProducer(bootstrap_servers=[kafka_configs])
 
-# connect to database
-# con = cql.connect('localhost', 9042, 'forex_demo')
-# cursor = con.cursor()
-
-cluster = Cluster()
+db_configs = os.getenv('DATABASE_PORT_9042_TCP').replace('tcp://', '')
+HOST, PORT = db_configs.split(':')
+cluster = Cluster([HOST], port=PORT)
 session = cluster.connect('wolf')
 
 
@@ -46,10 +46,11 @@ topicJ       = "forexJ"
 
 forex_pair   = "unknown"
 if len(sys.argv) > 3:
-	forex_pair = sys.argv[1]
-	custom_year = sys.argv[2]
-	custom_month = sys.argv[3]
-	custom_day = sys.argv[4]
+    print(sys.argv)
+    forex_pair = sys.argv[1]
+    custom_year = sys.argv[2]
+    custom_month = sys.argv[3]
+    # custom_day = sys.argv[4]
 
 # load a file to memory
 # print "Loading data to memory..."
@@ -60,13 +61,14 @@ path = os.path.join(DATA_DIR, filename)
 # initialize scheduler
 s = sched.scheduler(time.time, time.sleep)
 
-def upload(q,m,l,j):
-	print(m)
-	producer.send(topic,l)
-	producer.send(topicJ,j)
-	session.execute(q)
 
-print "Loading data to scheduler..."
+def upload(q, m, l, j):
+    print(m)
+    producer.send(topic, str.encode(l))
+    producer.send(topicJ, str.encode(j))
+    session.execute(q)
+
+print("Loading data to scheduler...")
 
 with open(path) as f:
     for line in f:
@@ -75,8 +77,8 @@ with open(path) as f:
 
         year = date[0][0:4]
         month = date[0][4:6]
-        if custom_month>0:
-                month = custom_month
+        if int(custom_month) > 0:
+            month = custom_month
         day = date[0][6:8]
         # if custom_day>0:
                 # day = custom_day
@@ -118,15 +120,15 @@ with open(path) as f:
         tickJ = json.dumps({'symbol':forex_pair,'issued_at':utc_t,'bid':bid,'ask':ask})
         #validate(tickJ,schema)
 
-        upload(q,m,tick,tickJ)
+        upload(q, m, tick, tickJ)
 
-print "Loading data to scheduler done!"
+print("Loading data to scheduler done!")
 
 # run the scheduler
 
-print "Running scheduler..."
+print("Running scheduler...")
 s.run()
-print "Running scheduler done!"
+print("Running scheduler done!")
 
 # cleanup when scheduler is done
 # cursor.close()
