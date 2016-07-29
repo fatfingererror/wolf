@@ -46,14 +46,17 @@ topicJ       = "forexJ"
 
 forex_pair   = "unknown"
 if len(sys.argv) > 3:
-    print(sys.argv)
-    forex_pair = sys.argv[1]
-    custom_year = sys.argv[2]
-    custom_month = sys.argv[3]
-    # custom_day = sys.argv[4]
+	forex_pair = sys.argv[1]
+	custom_month = sys.argv[2]
+	custom_day = sys.argv[3]
 
-filename = 'DAT_ASCII_' + forex_pair.upper() + '_T_' + custom_year + custom_month + '.csv'
-path = os.path.join(DATA_DIR, filename)
+# load a file to memory
+print("Loading data to memory...")
+lines = [] #[line.strip() for line in sys.stdin]
+for line in sys.stdin:
+    print(line)
+    lines.append(line)
+print("Loading data to memory done!")
 
 # initialize scheduler
 s = sched.scheduler(time.time, time.sleep)
@@ -66,58 +69,56 @@ def upload(q, m, l, j):
 
 print("Loading data to scheduler...")
 
-with open(path) as f:
-    for line in f:
-        cols = line.split(",")
-        date = cols[0].split(" ")
+for line in lines:
+    cols = line.split(",")
+    date = cols[0].split(" ")
 
-        year = date[0][0:4]
-        month = date[0][4:6]
-        if int(custom_month) > 0:
-            month = custom_month
+    year = date[0][0:4]
+    month = date[0][4:6]
+    if int(custom_month) > 0:
+        month = custom_month
 
-        day = date[0][6:8]
-        if int(custom_day) > 0:
-            day = custom_day
+    day = date[0][6:8]
+    if int(custom_day) > 0:
+        day = custom_day
 
-        hour = date[1][0:2]
-        minute = date[1][2:4]
-        second = date[1][4:6]
-        milisec = date[1][6:9]
+    hour = date[1][0:2]
+    minute = date[1][2:4]
+    second = date[1][4:6]
+    milisec = date[1][6:9]
 
-        bid = cols[1]
-        ask = cols[2]
+    bid = cols[1]
+    ask = cols[2]
 
-        timestring = year + month + day + hour + minute + second + milisec + "00"
+    timestring = year + month + day + hour + minute + second + milisec + "00"
 
-        timezone_blind = datetime.strptime(timestring, "%Y%m%d%H%M%S%f")
-        timezone_aware = est.localize(timezone_blind)
-        utc_ts         = datetime.utctimetuple(timezone_aware)
-        #utc_t          = mktime(utc_ts) + 1.0 * int(milisec) / 1000
-        utc_t          = calendar.timegm(utc_ts) + 1.0 * int(milisec) / 1000
-        utc_s1         = strftime('%Y-%m-%d %H:%M:%S.', utc_ts)
-        utc_s1         = utc_s1 + milisec + "+0000"
-        utc_k          = forex_pair + ":" + strftime('%Y-%m-%d', utc_ts)
+    timezone_blind = datetime.strptime(timestring, "%Y%m%d%H%M%S%f")
+    timezone_aware = est.localize(timezone_blind)
+    utc_ts         = datetime.utctimetuple(timezone_aware)
+    utc_t          = calendar.timegm(utc_ts) + 1.0 * int(milisec) / 1000
+    utc_s1         = strftime('%Y-%m-%d %H:%M:%S.', utc_ts)
+    utc_s1         = utc_s1 + milisec + "+0000"
+    utc_k          = forex_pair + ":" + strftime('%Y-%m-%d', utc_ts)
 
-        #print utc_ts
-        #print utc_k
+    #print utc_ts
+    #print utc_k
 
-        q = "INSERT INTO ticks (pair_day,issued_at,bid,ask) VALUES ("
-        q = q + "'" + utc_k + "',"
-        q = q + "'" + utc_s1 + "',"
-        q = q + "" + bid + ","
-        q = q + "" + ask + ") USING TTL 10800;"
+    q = "INSERT INTO ticks (pair_day,issued_at,bid,ask) VALUES ("
+    q = q + "'" + utc_k + "',"
+    q = q + "'" + utc_s1 + "',"
+    q = q + "" + bid + ","
+    q = q + "" + ask + ") USING TTL 10800;"
 
-        m = "pushing " + forex_pair + " "
-        m = m + utc_s1 + " "
-        m = m + "to key " + utc_k + " "
-        m = m + "with timestamp " + str(utc_t)
+    m = "pushing " + forex_pair + " "
+    m = m + utc_s1 + " "
+    m = m + "to key " + utc_k + " "
+    m = m + "with timestamp " + str(utc_t)
 
-        tick  = forex_pair + " 0 " + '%d' % (utc_t * 1000) + " " + '%d' % (utc_t * 1000) + " " + str(bid) + " " + str(ask)
-        tickJ = json.dumps({'symbol': forex_pair, 'issued_at': utc_t, 'bid': bid, 'ask': ask})
-        #validate(tickJ,schema)
+    tick  = forex_pair + " 0 " + '%d' % (utc_t * 1000) + " " + '%d' % (utc_t * 1000) + " " + str(bid) + " " + str(ask)
+    tickJ = json.dumps({'symbol': forex_pair, 'issued_at': utc_t, 'bid': bid, 'ask': ask})
+    #validate(tickJ,schema)
 
-        upload(q, m, tick, tickJ)
+    s.enterabs(utc_t, 1, upload, argument=(q, m, tick, tickJ))
 
 print("Loading data to scheduler done!")
 
