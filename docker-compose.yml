@@ -23,6 +23,16 @@ data_provider:
     sh bin/run.sh
     # ls /srv/data.provider
 
+hadoop:
+  build: .
+  dockerfile: data.aggregator.batch/Dockerfile
+  volumes:
+    - ./data.aggregator.batch:/srv/data.aggregator.batch
+  links:
+    - cassandra:database
+  command:
+    python3 src/2.aggregate.py
+
 # http://192.168.99.101:8080/
 # /etc/hosts dockerion:8080
 web:

@@ -6,5 +6,3 @@ PROPERTIES=/home/ubuntu/camus/camus-example/src/main/resources/camus.properties
 HADOOP=hadoop
 
 $HADOOP jar $JAR $CLASS -P $PROPERTIES
-
-
