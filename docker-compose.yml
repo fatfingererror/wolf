@@ -14,7 +14,7 @@ data_provider:
   dockerfile: data.provider/Dockerfile
   volumes:
     - ./data.provider:/srv/data.provider/
-    - ./histdata.com/data/csv:/srv/histdata.com/data/csv
+    - ./histdata.com/data/csv:/srv/data.provider/data/csv
   links:
     - cassandra:database
     - data_router:kafka

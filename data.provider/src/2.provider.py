@@ -13,7 +13,7 @@ from flask import json
 from cassandra.cluster import Cluster
 
 __here__ = os.path.dirname(os.path.abspath(__file__))
-DATA_DIR = os.path.join(__here__, '..', '..', 'histdata.com', 'data', 'csv')
+DATA_DIR = os.getenv('WOLF_HISTDATA_HOME')
 
 schema = {
         "properties" : {
@@ -52,18 +52,14 @@ if len(sys.argv) > 3:
     custom_month = sys.argv[3]
     # custom_day = sys.argv[4]
 
-# load a file to memory
-# print "Loading data to memory..."
-# lines = [line.strip() for line in sys.stdin]
-# print "Loading data to memory done!"
 filename = 'DAT_ASCII_' + forex_pair.upper() + '_T_' + custom_year + custom_month + '.csv'
 path = os.path.join(DATA_DIR, filename)
+
 # initialize scheduler
 s = sched.scheduler(time.time, time.sleep)
 
 
 def upload(q, m, l, j):
-    print(m)
     producer.send(topic, str.encode(l))
     producer.send(topicJ, str.encode(j))
     session.execute(q)
@@ -79,9 +75,10 @@ with open(path) as f:
         month = date[0][4:6]
         if int(custom_month) > 0:
             month = custom_month
+
         day = date[0][6:8]
-        # if custom_day>0:
-                # day = custom_day
+        if int(custom_day) > 0:
+            day = custom_day
 
         hour = date[1][0:2]
         minute = date[1][2:4]
@@ -93,7 +90,7 @@ with open(path) as f:
 
         timestring = year + month + day + hour + minute + second + milisec + "00"
 
-        timezone_blind = datetime.strptime(timestring,"%Y%m%d%H%M%S%f")
+        timezone_blind = datetime.strptime(timestring, "%Y%m%d%H%M%S%f")
         timezone_aware = est.localize(timezone_blind)
         utc_ts         = datetime.utctimetuple(timezone_aware)
         #utc_t          = mktime(utc_ts) + 1.0 * int(milisec) / 1000
@@ -117,7 +114,7 @@ with open(path) as f:
         m = m + "with timestamp " + str(utc_t)
 
         tick  = forex_pair + " 0 " + '%d' % (utc_t * 1000) + " " + '%d' % (utc_t * 1000) + " " + str(bid) + " " + str(ask)
-        tickJ = json.dumps({'symbol':forex_pair,'issued_at':utc_t,'bid':bid,'ask':ask})
+        tickJ = json.dumps({'symbol': forex_pair, 'issued_at': utc_t, 'bid': bid, 'ask': ask})
         #validate(tickJ,schema)
 
         upload(q, m, tick, tickJ)
@@ -131,6 +128,4 @@ s.run()
 print("Running scheduler done!")
 
 # cleanup when scheduler is done
-# cursor.close()
-# con.close()
 cluster.shutdown()
