@@ -1,0 +1,4 @@
+pytz
+flask
+kafka
+cassandra-driver
