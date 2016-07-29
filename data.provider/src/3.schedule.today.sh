@@ -11,28 +11,23 @@ if [ -z "$WOLF_HISTDATA_HOME" ]; then
 fi
 
 if [ $# -ne 1 ]
-then 
+then
 	echo "usage: $(basename $0) SYMBOL"
 	exit 1
 fi
 
 CAT=/bin/cat
-PYTHON=/usr/bin/python
+PYTHON=/usr/bin/python3
 
-PATH_TO_CSV=$WOLF_HISTDATA_HOME/data/csv
+PATH_TO_CSV=$WOLF_HISTDATA_HOME
 PATH_TO_SRC=$WOLF_DATA_PROVIDER_HOME/src
 PATH_TO_LOG=$WOLF_DATA_PROVIDER_HOME/log
 
 CURR_MONTH=$(TZ="EST" date +"%m")
-# PREV_MONTH=$(TZ="EST" date +"%m" --date="1 month ago")
-
-PREV_MONTH=$(TZ="EST" date -v-1m +"%m")
+PREV_MONTH=$(TZ="EST" date +"%m" --date="1 month ago")
 
 CURR_DAY=$(TZ="EST" date +"%d")
-# NEXT_DAY=$(TZ="EST" date +"%d" --date="next day")
-NEXT_DAY=$(TZ="EST" date -v+1d +"%d")
-
-CURR_HOUR=$(TZ="EST" date +"%H")
+NEXT_DAY=$(TZ="EST" date +"%d" --date="next day")
 
 CURR_YEAR=$(TZ="EST" date +"%Y")
 
