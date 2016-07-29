@@ -13,13 +13,15 @@ data_provider:
   build: .
   dockerfile: data.provider/Dockerfile
   volumes:
-    - ./data.provider:/srv/data.provider/
-    - ./histdata.com/data/csv:/srv/data.provider/data/csv
+    - ./data.provider:/srv/data.provider
+    - /Users/lambdasloth/git/working/projects/wolf/histdata.com/data/csv:/srv/data
   links:
     - cassandra:database
     - data_router:kafka
   command:
-    python3 src/2.provider.py audusd 2016 05
+    # python3 src/2.provider.py audusd 2016 05
+    sh bin/run.sh
+    # ls /srv/data.provider
 
 # http://192.168.99.101:8080/
 # /etc/hosts dockerion:8080
@@ -36,3 +38,8 @@ php:
     image: php:7-fpm
     volumes:
         - ./web.interface/:/srv/web/
+
+testing:
+  image: ubuntu
+  volumes:
+    - /Users/lambdasloth/git/working/projects/wolf/histdata.com/data/csv:/srv/data
