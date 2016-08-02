@@ -27,7 +27,6 @@ schema = {
 
 # connect to kafka
 kafka_configs = os.getenv('KAFKA_PORT_9092_TCP').replace('tcp://', '')
-kafka = KafkaClient(bootstrap_servers=[kafka_configs])
 producer = KafkaProducer(bootstrap_servers=[kafka_configs])
 
 db_configs = os.getenv('DATABASE_PORT_9042_TCP').replace('tcp://', '')
