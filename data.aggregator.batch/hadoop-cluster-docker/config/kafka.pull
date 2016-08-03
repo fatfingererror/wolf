@@ -3,7 +3,7 @@ job.group=GobblinKafka
 job.description=Gobblin quick start job for Kafka
 job.lock.enabled=false
 
-kafka.brokers=172.17.0.2:9092
+kafka.brokers=${KAFKA_PORT_9092_TCP}
 topic.whitelist=forex
 
 source.class=gobblin.source.extractor.extract.kafka.KafkaSimpleSource

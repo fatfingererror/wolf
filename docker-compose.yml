@@ -25,11 +25,12 @@ data_provider:
 
 hadoop:
   build: .
-  dockerfile: data.aggregator.batch/Dockerfile
+  dockerfile: data.aggregator.batch/hadoop-cluster-docker/Dockerfile
   volumes:
     - ./data.aggregator.batch:/srv/data.aggregator.batch
   links:
-    - cassandra:database
+    - data_router:kafka
+    # - cassandra:database
   command:
     python3 src/2.aggregate.py
 
