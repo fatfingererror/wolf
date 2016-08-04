@@ -6,9 +6,10 @@ N=${1:-3}
 
 # start hadoop master container
 # containers running on different networks (--net) cannot be linked properly
+# be careful with the links (they must refer to existing containers), docker does error
 docker rm -f hadoop-master &> /dev/null
 echo "start hadoop-master container..."
-docker run -itd -p 50070:50070 -p 8088:8088 --name hadoop-master --hostname hadoop-master --link wolf_cassandra_1:database --link wolf_data_router_1:kafka wolf_hadoop &> /dev/null
+docker run -itd -p 50070:50070 -p 8088:8088 --name hadoop-master --hostname hadoop-master --link wolf_cassandra_1:database --link kafka wolf_hadoop &> /dev/null
 
 # start hadoop slave container
 # i=1
@@ -25,4 +26,4 @@ docker run -itd -p 50070:50070 -p 8088:8088 --name hadoop-master --hostname hado
 # done
 
 # get into hadoop master container
-docker exec -it hadoop-master bash
+# docker exec -it hadoop-master bash

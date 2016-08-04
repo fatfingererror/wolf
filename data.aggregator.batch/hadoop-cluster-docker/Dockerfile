@@ -38,6 +38,7 @@ ENV GOBBLIN_JOB_CONFIG_DIR /usr/local/gobblin/fin
 # set environment variable
 ENV JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64
 ENV HADOOP_HOME=/usr/local/hadoop
+ENV HADOOP_BIN_DIR=$HADOOP_HOME/bin
 ENV PATH=$PATH:/usr/local/hadoop/bin:/usr/local/hadoop/sbin
 
 # ssh without key
