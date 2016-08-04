@@ -55,10 +55,10 @@ RUN mv $PROJECT_ROOT/hadoop-cluster-docker/config/ssh_config ~/.ssh/config && \
     mv $PROJECT_ROOT/hadoop-cluster-docker/config/core-site.xml $HADOOP_HOME/etc/hadoop/core-site.xml && \
     mv $PROJECT_ROOT/hadoop-cluster-docker/config/mapred-site.xml $HADOOP_HOME/etc/hadoop/mapred-site.xml && \
     mv $PROJECT_ROOT/hadoop-cluster-docker/config/yarn-site.xml $HADOOP_HOME/etc/hadoop/yarn-site.xml && \
-    # m$PROJECT_ROOTmhadoop-cluster-docker/config/p/slaves $HADOOP_HOME/etc/hadoop/slaves && \
+    mv $PROJECT_ROOT/hadoop-cluster-docker/config/slaves $HADOOP_HOME/etc/hadoop/slaves && \
     mv $PROJECT_ROOT/hadoop-cluster-docker/config/start-hadoop.sh ~/start-hadoop.sh && \
     mv $PROJECT_ROOT/hadoop-cluster-docker/config/run-wordcount.sh ~/run-wordcount.sh && \
-    mv $PROJECT_ROOT/hadoop-cluster-docker/config/kafka.pull $GOBBLIN_HOME/fin/kafka.pull
+    mv $PROJECT_ROOT/hadoop-cluster-docker/config/mrkafka.pull $GOBBLIN_HOME/fin/mrkafka.pull
 
 RUN chmod +x ~/start-hadoop.sh && \
     chmod +x ~/run-wordcount.sh && \

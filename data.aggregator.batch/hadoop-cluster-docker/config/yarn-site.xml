@@ -8,10 +8,10 @@
         <name>yarn.nodemanager.aux-services.mapreduce_shuffle.class</name>
         <value>org.apache.hadoop.mapred.ShuffleHandler</value>
     </property>
-    <!-- <property> -->
-    <!--     <name>yarn.resourcemanager.hostname</name> -->
-    <!--     <value>hadoop-master</value> -->
-    <!-- </property> -->
+    <property>
+        <name>yarn.resourcemanager.hostname</name>
+        <value>hadoop-master</value>
+    </property>
   <property>
      <name>yarn.nodemanager.disk-health-checker.min-healthy-disks</name>
      <value>0.0</value>
