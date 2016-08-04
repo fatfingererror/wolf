@@ -30,7 +30,7 @@ hadoop:
     - ./data.aggregator.batch:/srv/data.aggregator.batch
   links:
     - data_router:kafka
-    # - cassandra:database
+    - cassandra:database
   command:
     python3 src/2.aggregate.py
 
