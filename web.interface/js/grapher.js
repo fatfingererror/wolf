@@ -10,7 +10,7 @@ $(function () {
 			var p = '#placeholder-'.concat(n)
 			$.plot(p,[])
 			$(p).append("<div style='position:absolute;left:" + 
-			10 + "px;top:" + 10 + "px;color:#666;font-size:smaller'>" + n + " waiting for the data...</div>");
+			10 + "px;top:" + 10 + "px;color:#666;font-size:smaller'>" + n + " waiting for the data to come...</div>");
 		}
 	}
 
@@ -53,7 +53,7 @@ function onDataReceived(json) {
 
 		$.ajax({
 			cache: false,
-			url: "http://54.183.118.189:5000",
+			url: "http://192.168.99.100:5000",
 			type: "GET",
 			dataType: "json",
 			success: onDataReceived,

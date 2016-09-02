@@ -7,7 +7,7 @@ $(function() {
 		url = document.getElementById('rule-creator-url').value
 
 		$.ajax({
-			url: "http://54.183.118.189:5002/",
+			url: "http://192.168.99.100:5002/",
 			type: "POST",
 			ContentType: "application/json",
 			data: {"data": JSON.stringify({"symbol":sym,"modifier":mod,"comparator":com,"threshold":parseFloat(thr),"url":url})},

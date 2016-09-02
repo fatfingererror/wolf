@@ -57,7 +57,7 @@ $(function () {
 
 		$.ajax({
 			cache: false,
-			url: "http://54.183.118.189:5006",
+			url: "http://192.168.99.100:5006",
 			type: "GET",
 			dataType: "json",
 			success: onDataReceived,
