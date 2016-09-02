@@ -50,6 +50,18 @@ php:
     volumes:
         - ./web.interface/:/srv/web/
 
+cache_rt:
+  build: .
+  dockerfile: restful.cache.service.rt/Dockerfile
+  ports:
+    - "5000:5000"
+  volumes:
+    - ./restful.cache.service.rt:/srv/restful.cache.service.rt
+  links:
+    - cassandra:database
+  command:
+    python3 src/server.py
+
 testing:
   image: ubuntu
   volumes:
