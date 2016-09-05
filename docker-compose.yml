@@ -15,7 +15,7 @@ data_provider:
   dockerfile: data.provider/Dockerfile
   volumes:
     - ./data.provider:/srv/data.provider
-    - /Users/lambdasloth/git/working/projects/wolf/histdata.com/data/csv:/srv/data
+    - $PROJECT_HOME_DIR/histdata.com/data/csv:/srv/data
   # links:
     # - cassandra:database
     # - data_router:kafka
@@ -64,7 +64,22 @@ api_rt:
   command:
     python3 src/server.py
 
+api_batch:
+  build: .
+  container_name: api_batch
+  dockerfile: restful.cache.service.batch/Dockerfile
+  ports:
+    - "5006:5006"
+  volumes:
+    - ./restful.cache.service.batch:/srv/restful.cache.service.batch
+  links:
+    - cassandra:database
+  command:
+    python3 src/server.py
+
 testing:
   image: ubuntu
   volumes:
-    - /Users/lambdasloth/git/working/projects/wolf/histdata.com/data/csv:/srv/data
+    - ${PROJECT_HOME_DIR}/histdata.com/data/csv:/srv/data
+  command:
+    ls /srv/data
