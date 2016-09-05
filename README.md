@@ -23,19 +23,6 @@ User can specify a trading rule in the bottom right corner of the system. Specif
 ![alt tag](https://raw.githubusercontent.com/slawekj/wolf/master/images/plot-detailed.png "Detailed Graph")
 The top plot shows the latest minute of trade. The bottom plot shows the last hour, with values averaged per-minute in [Aggregator - Batch](data.aggregator.batch/) module. Note that the last couple of minutes are missing because MR jobs, executed by Hive, are running in background.
 
-### Getting started
-
-I am currently working on the deployment scripts, all the modules should be easy to deploy using the following commands:
-```
-git clone https://github.com/slawekj/wolf.git
-install cassandra, kafka, storm
-make cassandra start at login:  ln -sfv /usr/local/opt/cassandra/*.plist ~/Library/LaunchAgents
-pip install -r requirements.txt
-Whenever needed to scrape (after end of previous month): python histdata.com/src/1.scrape.py gbpusd 2016 06
-cqlsh < data.aggregator.rt/src/1.create.table.cql
-Download flot js: http://www.flotcharts.org/ and move at web.interface/
-php -S localhost:8000
-Navigate at: /Users/lambdasloth/git/working/projects/wolf/web.interface/graph.new.html
 ```
 Modules should be deployed, possibly to different physical machines/clusters, in the following order:
   1. data.router (deployment scripts ready)
