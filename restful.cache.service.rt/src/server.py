@@ -110,5 +110,4 @@ if __name__ == '__main__':
     app.debug = True
     host=socket.gethostbyname(socket.gethostname())
     app.run(host=host)
-    #cursor.close()
-    #con.close()
+    # cluster.shutdown()

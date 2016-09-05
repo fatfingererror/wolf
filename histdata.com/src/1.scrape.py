@@ -6,7 +6,7 @@ import zipfile
 from selenium import webdriver
 
 pairs = ['eurusd', 'gbpusd'] #'usdjpy', 'usdchf', 'usdcad', 'audusd', 'nzdusd']
-months = ['6']
+months = ['8']
 years = ['2016']
 destination_path = os.path.join(os.path.expanduser('~'), 'git/working/projects/wolf/histdata.com/data/csv')
 downloads_path = os.path.join(os.path.expanduser('~'), 'Downloads')
@@ -23,7 +23,7 @@ for p in pairs:
     for m in months:
             for y in years:
                 u = "http://www.histdata.com/download-free-forex-historical-data/?/ascii/tick-data-quotes/" + p + "/" + y + "/" + m
-                print "scraping " + u
+                print("scraping " + u)
 
                 driver.get(u)
                 time.sleep(5)

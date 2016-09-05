@@ -1,4 +1,4 @@
-FROM java:openjdk-8-jre
+FROM openjdk:8
 
 # Environment
 ENV DEBIAN_FRONTEND noninteractive
@@ -14,7 +14,7 @@ ENV PYTHONIOENCODING utf-8
 ENV PROJECT_NAME data.router
 ENV PROJECT_ROOT /srv/$PROJECT_NAME
 
-ADD bin $PROJECT_ROOT/bin
+# ADD bin $PROJECT_ROOT/bin
 
 WORKDIR $PROJECT_ROOT
 
