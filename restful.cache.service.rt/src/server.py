@@ -2,7 +2,7 @@
 import os
 from flask import Flask, jsonify
 import threading
-import time, datetime, struct
+import time, datetime
 import socket
 from flask import make_response, request, current_app
 from datetime import timedelta
@@ -81,16 +81,17 @@ def foo(pairs):
             utc = utc + ":" + str(date.second).zfill(2) + "+0000"
 
             data = session.execute(q % (key, utc))
-            print(q % (key, utc))
+            # print(q % (key, utc))
 
             #workaround
             # print("got " + str(len(data)) + " results from DB for " + p)
             tasks[p] = []
             for d in data:
-                d[0] = str(datetime.datetime.fromtimestamp(
-                    struct.unpack('!Q', d[0])[0]/1e3 )
-                )
-                tasks[p].append(data)
+                # print(d)
+                # d[0] = str(datetime.datetime.fromtimestamp(
+                    # struct.unpack('!Q', d[0])[0]/1e3 )
+                # )
+                tasks[p].append(d)
 
         time.sleep(2)
 

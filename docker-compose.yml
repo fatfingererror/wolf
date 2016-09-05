@@ -51,8 +51,9 @@ php:
     volumes:
         - ./web.interface/:/srv/web/
 
-cache_rt:
+api_rt:
   build: .
+  container_name: api_rt
   dockerfile: restful.cache.service.rt/Dockerfile
   ports:
     - "5000:5000"
